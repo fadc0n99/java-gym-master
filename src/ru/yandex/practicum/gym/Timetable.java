@@ -50,11 +50,8 @@ public class Timetable {
         return isOverlapPrevSession || isOverlapNextSession;
     }
 
-    public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        return timetableMap.getOrDefault(dayOfWeek, new TreeMap<>())
-                .values()
-                .stream()
-                .toList();
+    public Map<TimeOfDay, TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
+        return Collections.unmodifiableMap(timetableMap.getOrDefault(dayOfWeek, new TreeMap<>()));
     }
 
     public TrainingSession getTrainingSessionForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {

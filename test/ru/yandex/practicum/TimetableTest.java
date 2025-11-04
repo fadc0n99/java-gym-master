@@ -20,9 +20,9 @@ class TimetableTest {
         timetable.addNewTrainingSession(singleTrainingSession);
 
         List<TrainingSession> trainingSessionsForMonday =
-                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).values().stream().toList();
         List<TrainingSession> trainingSessionsForTuesday =
-                timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY);
+                timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY).values().stream().toList();
 
         //Проверить, что за понедельник вернулось одно занятие
         Assertions.assertEquals(1, trainingSessionsForMonday.size());
@@ -57,13 +57,13 @@ class TimetableTest {
 
         // Проверить, что за понедельник вернулось одно занятие
         List<TrainingSession> trainingSessionsForMonday =
-                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).values().stream().toList();
 
         Assertions.assertEquals(1, trainingSessionsForMonday.size());
 
         // Проверить, что за четверг вернулось два занятия в правильном порядке: сначала в 13:00, потом в 20:00
         List<TrainingSession> trainingSessionsForThursday =
-                timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY);
+                timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY).values().stream().toList();
 
         Assertions.assertEquals(2, trainingSessionsForThursday.size());
         Assertions.assertEquals(new TimeOfDay(13, 0), trainingSessionsForThursday.get(0).getTimeOfDay());
@@ -71,7 +71,7 @@ class TimetableTest {
 
         // Проверить, что за вторник не вернулось занятий
         List<TrainingSession> trainingSessionsForTuesday =
-                timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY);
+                timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY).values().stream().toList();
 
         Assertions.assertEquals(0, trainingSessionsForTuesday.size());
     }
@@ -182,7 +182,8 @@ class TimetableTest {
         timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
                 DayOfWeek.MONDAY, new TimeOfDay(10, 10)));
 
-        List<TrainingSession> trainingSessionList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+        List<TrainingSession> trainingSessionList =
+                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).values().stream().toList();
 
         Assertions.assertEquals(2, trainingSessionList.size());
     }
@@ -202,7 +203,8 @@ class TimetableTest {
         timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
                 DayOfWeek.MONDAY, new TimeOfDay(11, 10)));
 
-        List<TrainingSession> trainingSessionList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+        List<TrainingSession> trainingSessionList =
+                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).values().stream().toList();
 
         Assertions.assertEquals(2, trainingSessionList.size());
     }
