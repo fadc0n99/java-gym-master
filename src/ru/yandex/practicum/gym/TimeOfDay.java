@@ -22,6 +22,10 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
         return minutes;
     }
 
+    public int convertToMinutes() {
+        return hours * 60 + minutes;
+    }
+
     @Override
     public int compareTo(TimeOfDay o) {
         if (this.hours != o.hours) {

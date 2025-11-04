@@ -6,26 +6,55 @@ public class Timetable {
 
     private final Map<DayOfWeek, TreeMap<TimeOfDay, TrainingSession>> timetableMap = new HashMap<>();
 
-    public void addNewTrainingSession(TrainingSession trainingSession) {
-        if (trainingSession != null) {
-            Map<TimeOfDay, TrainingSession> sessions =
-                    timetableMap.computeIfAbsent(trainingSession.getDayOfWeek(), k -> new TreeMap<>());
+    public void addNewTrainingSession(TrainingSession newTrainingSession) {
+        if (newTrainingSession != null) {
+            TreeMap<TimeOfDay, TrainingSession> sessions =
+                    timetableMap.computeIfAbsent(newTrainingSession.getDayOfWeek(), k -> new TreeMap<>());
 
-            if (!sessions.containsKey(trainingSession.getTimeOfDay())) {
-                sessions.put(trainingSession.getTimeOfDay(), trainingSession);
+            if (!sessions.containsKey(newTrainingSession.getTimeOfDay())
+                    && !isOverlapNewSessionByTime(sessions, newTrainingSession)) {
+                sessions.put(newTrainingSession.getTimeOfDay(), newTrainingSession);
             }
         }
     }
 
-    public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        if (dayOfWeek != null) {
-            return timetableMap.getOrDefault(dayOfWeek, new TreeMap<>())
-                    .values()
-                    .stream()
-                    .toList();
+    private boolean isOverlapNewSessionByTime(NavigableMap<TimeOfDay, TrainingSession> sessions,
+                                              TrainingSession newTrainingSession) {
+        if (sessions.isEmpty()) return false;
+
+        boolean isOverlapPrevSession = false;
+        boolean isOverlapNextSession = false;
+
+        Map.Entry<TimeOfDay, TrainingSession> prevSessionEntry =
+                sessions.floorEntry(newTrainingSession.getTimeOfDay());
+        Map.Entry<TimeOfDay, TrainingSession> nextSessionEntry =
+                sessions.ceilingEntry(newTrainingSession.getTimeOfDay());
+
+        int startNewSession = newTrainingSession.getTimeOfDay().convertToMinutes();
+
+        if (prevSessionEntry != null) {
+            TrainingSession prevSession = prevSessionEntry.getValue();
+            int finishPrevSession =
+                    prevSession.getTimeOfDay().convertToMinutes() + prevSession.getGroup().getDuration();
+
+            isOverlapPrevSession = finishPrevSession > startNewSession;
+        }
+        if (nextSessionEntry != null) {
+            TrainingSession nextSession = nextSessionEntry.getValue();
+            int startNextSession = nextSession.getTimeOfDay().convertToMinutes();
+            int durationNewSession = newTrainingSession.getGroup().getDuration();
+
+            isOverlapNextSession = startNewSession + durationNewSession > startNextSession;
         }
 
-        return Collections.emptyList();
+        return isOverlapPrevSession || isOverlapNextSession;
+    }
+
+    public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
+        return timetableMap.getOrDefault(dayOfWeek, new TreeMap<>())
+                .values()
+                .stream()
+                .toList();
     }
 
     public TrainingSession getTrainingSessionForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {

@@ -167,4 +167,44 @@ class TimetableTest {
         Assertions.assertEquals(1, result.getFirst().counter());
     }
 
+    @Test
+    void testAddNewTrainingSessionForWhenOverlapWithPrevious() {
+        Timetable timetable = new Timetable();
+
+        Group groupAdult = new Group("Акробатика для взрослых", Age.ADULT, 60);
+
+        Coach coach1 = new Coach("Васильев", "Николай", "Сергеевич");
+
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(9, 10)));
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(10, 0)));
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(10, 10)));
+
+        List<TrainingSession> trainingSessionList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+
+        Assertions.assertEquals(2, trainingSessionList.size());
+    }
+
+    @Test
+    void testAddNewTrainingSessionForWhenOverlapWithNext() {
+        Timetable timetable = new Timetable();
+
+        Group groupAdult = new Group("Акробатика для взрослых", Age.ADULT, 60);
+
+        Coach coach1 = new Coach("Васильев", "Николай", "Сергеевич");
+
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(10, 0)));
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(9, 30)));
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach1,
+                DayOfWeek.MONDAY, new TimeOfDay(11, 10)));
+
+        List<TrainingSession> trainingSessionList = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+
+        Assertions.assertEquals(2, trainingSessionList.size());
+    }
+
 }
