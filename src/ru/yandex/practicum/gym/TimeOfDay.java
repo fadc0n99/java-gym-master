@@ -5,19 +5,35 @@ import java.util.Objects;
 public class TimeOfDay implements Comparable<TimeOfDay> {
 
     //часы (от 0 до 23)
-    private int hours;
+    private final int hours;
     //минуты (от 0 до 59)
-    private int minutes;
+    private final int minutes;
 
     public TimeOfDay(int hours, int minutes) {
         this.hours = hours;
         this.minutes = minutes;
     }
 
+    public int getHours() {
+        return hours;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public int convertToMinutes() {
+        return hours * 60 + minutes;
+    }
+
     @Override
     public int compareTo(TimeOfDay o) {
-        if (hours != o.hours) return hours - o.hours;
-        return minutes - o.minutes;
+        if (this.hours != o.hours) {
+            return this.hours - o.hours;
+        } else if (this.minutes != o.minutes) {
+            return this.minutes - o.minutes;
+        }
+        return 0;
     }
 
     @Override
@@ -31,13 +47,5 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
     @Override
     public int hashCode() {
         return Objects.hash(hours, minutes);
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
-    public int getMinutes() {
-        return minutes;
     }
 }
